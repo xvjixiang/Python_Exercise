@@ -1,0 +1,74 @@
+#排序
+import  datetime
+import numpy as np
+
+class SortType(object):
+    #装饰器，打印函数运行时间
+    def sort_time(func):
+        def wrapper(*args, **kwargs):
+            start_time = datetime.datetime.now()
+            print(func(*args, **kwargs))
+            end_time = datetime.datetime.now()
+            print('%s run time:%d' % (func.__name__,(end_time - start_time).seconds))
+        return wrapper
+
+    #冒泡排序
+    def bubble_sort(self,list_unsort):
+        for i in range(len(list_unsort)):
+            for j in range(len(list_unsort)-1):
+                if list_unsort[j]>list_unsort[j+1]:
+                    list_unsort[j],list_unsort[j+1]=list_unsort[j+1],list_unsort[j]
+        return list_unsort
+
+    #选择排序
+    @sort_time
+    def selection_sort(self,list_unsort):
+        for i in range(len(list_unsort)):
+            for j in range(i,len(list_unsort)):
+                if list_unsort[i]>list_unsort[j]:
+                    list_unsort[j]=list_unsort[i]
+        return list_unsort
+
+    #选择排序2
+    def selection_sort2(self,list_unsort):
+        start_time = datetime.datetime.now()
+        for i in range(len(list_unsort)):
+            min_position=i
+            for j in range(i,len(list_unsort)):
+                if list_unsort[min_position]>list_unsort[j]:
+                    min_position=j
+            list_unsort[i],list_unsort[min_position]=list_unsort[min_position],list_unsort[i]
+        end_time = datetime.datetime.now()
+        print('selection_sort2 run time:%d' % (end_time - start_time).seconds)
+        return list_unsort
+
+    #插入排序
+    @sort_time
+    def insertion_sort(self,list_unsort):
+        for i in range(1,len(list_unsort)):
+            for j in range(i,0,-1):
+                if list_unsort[j]<list_unsort[j-1]:
+                    list_unsort[j],list_unsort[j-1]=list_unsort[j-1],list_unsort[j]
+                else:
+                    break
+        return list_unsort
+
+    #快速排序
+    @sort_time
+    def quick_sort(self,list_unsort):
+        def qsort(list_unsort,left,right):
+            if left>=right:
+                return list_unsort
+            key=list_unsort[left]
+            left_p=left
+            right_p=right
+            while right_p>left_p:
+                while list_unsort[left_p]<key:
+                    left_p+=1
+                while list_unsort[right_p]>key:
+                    right_p-=1
+                list_unsort[right_p],list_unsort[left_p]=list_unsort[left_p],list_unsort[right_p]
+            qsort(list_unsort,left,left_p-1)
+            qsort(list_unsort,right_p+1,right)
+        qsort(list_unsort,0,len(list_unsort)-1)
+        print(list_unsort)
