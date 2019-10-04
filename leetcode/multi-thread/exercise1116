@@ -1,0 +1,40 @@
+--solution 1, timedout
+import threading
+class ZeroEvenOdd:
+    def __init__(self, n):
+        self.n = n
+        self.thread_lock_zero = threading.Lock()
+        self.thread_lock_even = threading.Lock()
+        self.thread_lock_even.acquire()
+        self.thread_lock_odd = threading.Lock()
+        self.thread_lock_odd.acquire()
+        self.current_num = 1
+
+    # printNumber(x) outputs "x", where x is an integer.
+    def zero(self, printNumber: 'Callable[[int], None]') -> None:
+        while self.current_num <= self.n:
+            self.thread_lock_zero.acquire()
+            if self.current_num <= self.n:
+                printNumber(0)
+                if self.current_num % 2 == 0:
+                    self.thread_lock_even.release()
+                if self.current_num % 2 == 1:
+                    self.thread_lock_odd.release()
+
+    def even(self, printNumber: 'Callable[[int], None]') -> None:
+        while self.current_num <= self.n:
+            if self.current_num % 2 == 0 and self.current_num <= self.n:
+                self.thread_lock_even.acquire()
+                printNumber(self.current_num)
+                self.current_num += 1
+                # if self.thread_lock_zero.locked() == True:
+                self.thread_lock_zero.release()
+
+    def odd(self, printNumber: 'Callable[[int], None]') -> None:
+        while self.current_num <= self.n:
+            if self.current_num % 2 == 1 and self.current_num <= self.n:
+                self.thread_lock_odd.acquire()
+                printNumber(self.current_num)
+                self.current_num += 1
+                # if self.thread_lock_zero.locked() == True:
+                self.thread_lock_zero.release()
