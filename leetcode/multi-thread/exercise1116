@@ -38,3 +38,35 @@ class ZeroEvenOdd:
                 self.current_num += 1
                 # if self.thread_lock_zero.locked() == True:
                 self.thread_lock_zero.release()
+--solution2:
+import threading
+class ZeroEvenOdd:
+    def __init__(self, n):
+        self.n = n
+        self.thread_lock_zero = threading.Lock()
+        self.thread_lock_even = threading.Lock()
+        self.thread_lock_even.acquire()
+        self.thread_lock_odd = threading.Lock()
+        self.thread_lock_odd.acquire()
+
+    # printNumber(x) outputs "x", where x is an integer.
+    def zero(self, printNumber: 'Callable[[int], None]') -> None:
+        for i in range(1,self.n+1):
+            self.thread_lock_zero.acquire()
+            printNumber(0)
+            if i % 2 == 0:
+                self.thread_lock_even.release()
+            if i % 2 == 1:
+                self.thread_lock_odd.release()
+
+    def even(self, printNumber: 'Callable[[int], None]') -> None:
+        for i in range(2,self.n+1,2):
+            self.thread_lock_even.acquire()
+            printNumber(i)
+            self.thread_lock_zero.release()
+
+    def odd(self, printNumber: 'Callable[[int], None]') -> None:
+        for i in range(1,self.n+1,2):
+            self.thread_lock_odd.acquire()
+            printNumber(i)
+            self.thread_lock_zero.release()
